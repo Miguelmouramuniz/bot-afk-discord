@@ -8,11 +8,11 @@ intents.guilds = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-VOICE_CHANNEL_ID = int(os.getenv("VOICE_CHANNEL_ID", "123456789012345678"))
+VOICE_CHANNEL_ID = int(os.getenv("VOICE_CHANNEL_ID", "0"))
 
 @bot.event
 async def on_ready():
-    print(f"Bot conectado com sucesso como {bot.user}")
+    print(f"Bot conectado como {bot.user}")
     channel = bot.get_channel(VOICE_CHANNEL_ID)
     
     if channel and isinstance(channel, discord.VoiceChannel):
@@ -21,19 +21,16 @@ async def on_ready():
                 await channel.connect()
                 print(f"Conectado ao canal de voz: {channel.name}")
         except Exception as e:
-            print(f"Erro ao conectar ao canal de voz: {e}")
-    else:
-        print("Canal de voz não encontrado ou ID inválido.")
+            print(f"Erro ao conectar: {e}")
 
 @bot.event
 async def on_voice_state_update(member, before, after):
     if member == bot.user and after.channel is None:
-        print("O bot foi desconectado. Tentando reconectar...")
+        print("Bot desconectado. A reconectar...")
         channel = bot.get_channel(VOICE_CHANNEL_ID)
         if channel:
             try:
                 await channel.connect()
-                print("Reconectado com sucesso!")
             except Exception as e:
                 print(f"Erro ao reconectar: {e}")
 
